@@ -2,7 +2,7 @@
   "name": "ng2node-template",
   "version": "1.0.0",
   "scripts": {
-    "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" ",
+    "start": "tsc && concurrently \"npm run tsc:w\" \"node app/app.startup.js\"  \"npm run lite\" ",
     "lite": "lite-server",
     "postinstall": "typings install",
     "tsc": "tsc",
@@ -36,8 +36,10 @@
     "concurrently": "^2.0.0",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
+    "gulp-typescript": "^2.13.6",
     "gulp-tslint": "^6.0.2",
     "lite-server": "^2.2.0",
+    "merge2": "^1.0.2",
     "tslint": "^3.14.0",
     "typescript": "^1.8.10",
     "typings": "^1.0.4"

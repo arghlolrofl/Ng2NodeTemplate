@@ -5,6 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>Ng2NodeTemplate</Name>
     <RootNamespace>Ng2NodeTemplate</RootNamespace>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -44,16 +45,19 @@
     <Content Include="tslint.json" />
     <Content Include="typings.json" />
     <TypeScriptCompile Include="src\app.component.ts" />
+    <TypeScriptCompile Include="src\app.config.ts" />
     <TypeScriptCompile Include="src\app.module.ts" />
+    <TypeScriptCompile Include="src\app.startup.ts" />
     <TypeScriptCompile Include="src\main.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />
-    <Folder Include="public\app\" />
     <Folder Include="public\css\" />
     <Folder Include="public\img\" />
-    <Folder Include="public\lib\" />
     <Folder Include="src\" />
+    <Folder Include="src\someComponent\" />
+    <Folder Include="src\interfaces\" />
+    <Folder Include="src\models\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gulpfile.js" />

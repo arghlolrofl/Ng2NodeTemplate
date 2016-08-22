@@ -10,6 +10,7 @@
 *.userprefs
 
 # Node stuff
+app/
 node_modules/
 typings/
 lib/
