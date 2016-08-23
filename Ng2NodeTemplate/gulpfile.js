@@ -1,7 +1,6 @@
 var gulp = require("gulp");
 var del = require("del");
-var ts = require('gulp-typescript');
-var merge = require('merge2');  // Require separate installation
+var flatten = require("gulp-flatten");
 const tslint = require("gulp-tslint"); 
 
 // runs ts lint with settings defined tslint.json
@@ -42,45 +41,30 @@ gulp.task("ng2:polyfills", function () {
 });
 
 // copy ng2 and dependencies
-gulp.task("ng2:libs", ["ng2:polyfills"], function () {
+gulp.task("ng2:maps", function () {
     return gulp.src([
-        "node_modules/@angular/**/*.js",
         "node_modules/@angular/**/*.map",
-        "node_modules/rxjs/**/*.js",
         "node_modules/rxjs/**/*.map"
-    ], { base: './node_modules/' })
+    ])
+        .pipe(flatten())
         .pipe(gulp.dest("public/lib"));
 });
 
-// transpile typescript files into output folder
-var tsProject = ts.createProject('tsconfig.json');
-gulp.task('ts:build:src', function () {
-    var tsResult = gulp.src('src/**/*.ts')
-        .pipe(ts(tsProject));
-
-    return merge([
-        tsResult.dts.pipe(gulp.dest('public/definitions')),
-        tsResult.js.pipe(gulp.dest('public/app'))
-    ]);
+// copy ng2 and dependencies
+gulp.task("ng2:libs", ["ng2:polyfills", "ng2:maps"], function () {
+    return gulp.src([
+        "node_modules/@angular/**/*.js",
+        "node_modules/rxjs/**/*.js"
+    ], { base: "./node_modules/" })
+        .pipe(gulp.dest("public/lib"));
 });
 
-// transpile typescript files into output folder
-//var tsProject = ts.createProject('node/tsconfig.json');
-gulp.task('ts:build:node', function () {
-    var tsResult = gulp.src('node/**/*.ts')
-        .pipe(ts({
-            noImplicitAny: true
-        }));
-
-    return merge([
-        tsResult.dts.pipe(gulp.dest('node/definitions')),
-        tsResult.js.pipe(gulp.dest('node'))
-    ]);
+gulp.task("move:src:maps", function () {
+    return gulp.src("public/app/**/*.map")
+        .pipe(flatten())
+        .pipe(gulp.dest("public/lib"));
 });
 
-
-gulp.task('ts:watch', function () {
-    gulp.watch('src/**/*.ts', ['ts:build:src']);
+gulp.task("del:src:maps", ["move:src:maps"], function () {
+    return del("public/app/**/*.map");
 });
-
-gulp.task("ts:rebuild", ["ts:lint", "ts:clean:libs", "ts:clean:src", "ng2:libs", "ts:build"]);

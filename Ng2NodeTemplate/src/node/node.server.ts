@@ -4,24 +4,25 @@
 /// <reference path="../../typings/globals/morgan/index.d.ts" />
 /// <reference path="../../typings/globals/node/index.d.ts" />
 
-import * as express from 'express';
-import * as morgan from 'morgan';
-import * as bodyParser from 'body-parser';
-import { RouteConfig } from './node.routes';
-import * as chalk from 'chalk';
+import * as bodyParser from "body-parser";
+import * as chalk from "chalk";
+import * as express from "express";
+import * as morgan from "morgan";
+
+import { RouteConfig } from "./node.routes";
 
 export class NodeExpressServer {
-    private m_port: number = 8080;
-    private m_expressApp: express.Application;
+    private port: number = 8080;
+    private expressApp: express.Application;
 
     constructor(port?: number) {
-        this.m_port = port;
+        this.port = port;
 
         // create the server instance
-        this.m_expressApp = express();
+        this.expressApp = express();
         // initialize the logger
-        //this.m_expressApp.use(morgan('    :status    :method    :url'));
-        this.m_expressApp.use(morgan(function (tokens: any, req: express.Request, res: express.Response) {            
+        // this.m_expressApp.use(morgan("    :status    :method    :url"));
+        this.expressApp.use(morgan(function (tokens: any, req: express.Request, res: express.Response) {
             if (res.statusCode >= 100 && res.statusCode < 200) {
                 return "    " + chalk.bold.white(tokens.method(req, res))
                     + "    " + chalk.grey(tokens.status(req, res))
@@ -42,25 +43,25 @@ export class NodeExpressServer {
         }));
 
         // add middleware
-        this.m_expressApp.use(bodyParser.json());
-        this.m_expressApp.use(bodyParser.urlencoded({ extended: true }));
+        this.expressApp.use(bodyParser.json());
+        this.expressApp.use(bodyParser.urlencoded({ extended: true }));
 
         let path = __dirname + "/../..";
         console.log("\n> wwwroot has been set to: " + path);
 
         // set wwwroot folder
-        this.m_expressApp.use(express.static(path));
+        this.expressApp.use(express.static(path));
     }
 
     public setRoutes(): void {
-        new RouteConfig(this.m_expressApp).setup();
+        new RouteConfig(this.expressApp).setup();
     }
 
     public startServer(): void {
-        this.m_expressApp.listen(this.m_port, this.NodeExpressServer_OnListen.bind(this));        
+        this.expressApp.listen(this.port, this.NodeExpressServer_OnListen.bind(this));
     }
 
     private NodeExpressServer_OnListen(): void {
-        console.log("> Node express server listening on port: " + this.m_port);
+        console.log("> Node express server listening on port: " + this.port);
     }
 }

@@ -1,14 +1,14 @@
-﻿import { BrowserModule } from "@angular/platform-browser";
+﻿import { NgModule } from "@angular/core";
 import { HttpModule } from "@angular/http";
-import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
 
 import { AppComponent }  from "./app.component";
-import { ThingService } from "./services/ThingService";
+import { ThingRepositoryService } from "./services/ThingRepositoryService";
 
 @NgModule({
     bootstrap: [AppComponent],
     declarations: [AppComponent],
     imports: [BrowserModule, HttpModule],
-    providers: [ThingService],
+    providers: [ThingRepositoryService],
 })
 export class AppModule { }

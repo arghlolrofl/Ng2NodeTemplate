@@ -54,7 +54,7 @@
     <TypeScriptCompile Include="src\models\Thing.ts" />
     <TypeScriptCompile Include="src\node\node.routes.ts" />
     <TypeScriptCompile Include="src\node\node.server.ts" />
-    <TypeScriptCompile Include="src\services\ThingService.ts" />
+    <TypeScriptCompile Include="src\services\ThingRepositoryService.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />
