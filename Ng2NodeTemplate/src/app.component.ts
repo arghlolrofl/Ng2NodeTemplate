@@ -1,7 +1,28 @@
-﻿import { Component } from "@angular/core";
+﻿import { Component, OnInit } from "@angular/core";
+
+import { Thing } from "./models/Thing";
+import { ThingService } from "./services/ThingService";
 
 @Component({
+    providers: [
+        ThingService,
+    ],
     selector: "my-app",
-    template: "<h1>My First Angular 2 App</h1>",
+    templateUrl: "views/app.component.html",
 })
-export class AppComponent { }
+export class AppComponent implements OnInit {
+    public things: Array<Thing>;
+
+    private thingService: ThingService;
+
+    // service gets injected
+    constructor(thingService: ThingService) {
+        this.thingService = thingService;
+    }
+
+    public ngOnInit(): void {
+        let things = new Array<Thing>();
+
+        var x = this.thingService.getAll().subscribe(data => console.log('new list values', data));
+    }
+}

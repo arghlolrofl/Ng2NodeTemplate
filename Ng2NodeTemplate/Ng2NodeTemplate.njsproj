@@ -40,6 +40,7 @@
     <Content Include="public\css\styles.css" />
     <Content Include="public\index.html" />
     <Content Include="package.json" />
+    <Content Include="public\views\app.component.html" />
     <Content Include="README.md" />
     <Content Include="tsconfig.json" />
     <Content Include="tslint.json" />
@@ -48,13 +49,21 @@
     <TypeScriptCompile Include="src\app.config.ts" />
     <TypeScriptCompile Include="src\app.module.ts" />
     <TypeScriptCompile Include="src\app.startup.ts" />
+    <TypeScriptCompile Include="src\interfaces\IRepositoryService.ts" />
     <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\models\Thing.ts" />
+    <TypeScriptCompile Include="src\node\node.routes.ts" />
+    <TypeScriptCompile Include="src\node\node.server.ts" />
+    <TypeScriptCompile Include="src\services\ThingService.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />
     <Folder Include="public\css\" />
     <Folder Include="public\img\" />
+    <Folder Include="public\views\" />
     <Folder Include="src\" />
+    <Folder Include="src\node\" />
+    <Folder Include="src\services\" />
     <Folder Include="src\someComponent\" />
     <Folder Include="src\interfaces\" />
     <Folder Include="src\models\" />
@@ -62,6 +71,7 @@
   <ItemGroup>
     <Compile Include="gulpfile.js" />
     <Compile Include="public\systemjs.config.js" />
+    <Compile Include="src\node\node.startup.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
