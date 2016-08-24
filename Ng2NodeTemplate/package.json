@@ -2,14 +2,16 @@
   "name": "ng2node-template",
   "version": "1.0.0",
   "scripts": {
+    "build": "concurrently \"npm run gulp -- CLEAN:src\" \"npm run gulp -- COPY:DEPENDENCIES\" && tsc",
+    "clean": "concurrently \"npm run gulp -- CLEAN:src\" \"npm run gulp -- CLEAN:lib\" ",
+    "rebuild": "npm run clean && npm run build",
     "gulp": "gulp",
-    "lint": "npm run gulp -- ts:lint",
-    "start": "tsc && npm run gulp -- del:src:maps && node public/app/node/node.startup.js",
+    "lint": "npm run gulp -- SOURCE.Lint",
+    "start": "npm run build && concurrently \"node public/app/node/node.startup.js\" \"npm run tsc:w\" ",
     "postinstall": "typings install",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
-    "typings": "typings",
-    "watch": "tsc && concurrently \"npm run tsc:w\" \"node public/app/node/node.startup.js\" "
+    "typings": "typings"
   },
   "license": "ISC",
   "dependencies": {
@@ -40,7 +42,7 @@
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-flatten": "^0.3.1",
-    "gulp-sourcemaps": "^1.6.0",
+    "gulp-replace": "^0.5.4",
     "gulp-tslint": "^6.0.2",
     "tslint": "^3.14.0",
     "typescript": "^1.8.10",

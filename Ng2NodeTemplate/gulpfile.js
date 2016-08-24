@@ -1,10 +1,31 @@
 var gulp = require("gulp");
 var del = require("del");
 var flatten = require("gulp-flatten");
-const tslint = require("gulp-tslint"); 
+var fs = require('fs');
+var path = require('path');
+var tslint = require("gulp-tslint");
+
+const LIB_DESTINATION_PATH = "public/lib";
+
+var filterNonExistingFiles = function (files, destination) {
+    var fileNames = files.map(function (obj) {
+        return path.basename(obj);
+    });
+
+    var exists = fileNames.map(function (obj) {
+        return fs.existsSync(__dirname + destination + obj);
+    });
+
+    fileNames = [];
+    for (var i = 0; i < files.length; i++)
+        if (!exists[i])
+            fileNames.push(files[i]);
+
+    return fileNames;
+};
 
 // runs ts lint with settings defined tslint.json
-gulp.task("ts:lint", function () {
+gulp.task("LINT:src", function () {
     return gulp.src("src/**/*.ts")
         .pipe(tslint({
             formatter: "verbose"
@@ -13,21 +34,55 @@ gulp.task("ts:lint", function () {
 });
 
 // clean the contents of the distribution directory
-gulp.task("ts:clean:libs", function () {
+gulp.task("CLEAN:lib", function () {
     return del("public/lib/**/*");
 });
 
-gulp.task("ts:clean:src", function () {
+gulp.task("CLEAN:src", function () {
     return del("public/app/**/*");
 });
 
-gulp.task("ts:clean:node", function () {
-    return del(["node/**/*.js", "node/**/*.map"]);
+// Copy Angular2 dependencies into public/lib
+gulp.task("COPY:ng2", function () {
+    var existsNg2 = false;
+
+    if (fs.existsSync(__dirname + "/public/lib/@angular"))
+        existsNg2 = true;
+
+    if (existsNg2) {
+        console.log("[GULP] Skipping 'NG2.CopyDependency.Angular2' ...");
+        return;
+    }
+
+    return gulp.src([
+        "node_modules/@angular/**/*.js",
+        "node_modules/@angular/**/*.map"
+    ], { base: "./node_modules/" })
+        .pipe(gulp.dest(LIB_DESTINATION_PATH));
+});
+
+// Copy rxjs dependencies into public/lib
+gulp.task("COPY:rxjs", function () {
+    var existsRxJs = false;
+
+    if (fs.existsSync(__dirname + "/public/lib/rxjs"))
+        existsRxJs = true;
+
+    if (existsRxJs) {
+        console.log("[GULP] Skipping 'NG2.CopyDependency.RxJs' ...");
+        return;
+    }
+
+    return gulp.src([
+        "node_modules/rxjs/**/*.js",
+        "node_modules/rxjs/**/*.map"
+    ], { base: "./node_modules/" })
+        .pipe(gulp.dest(LIB_DESTINATION_PATH), { overwrite: false });
 });
 
 // copy polyfills
-gulp.task("ng2:polyfills", function () {
-    return gulp.src([
+gulp.task("COPY:polyfills", function () {
+    var files = [
         "node_modules/core-js/client/shim.min.js",
         "node_modules/zone.js/dist/zone.js",
         "node_modules/reflect-metadata/Reflect.js",
@@ -36,35 +91,11 @@ gulp.task("ng2:polyfills", function () {
         "node_modules/zone.js/dist/zone.js.map",
         "node_modules/reflect-metadata/Reflect.js.map",
         "node_modules/systemjs/dist/system.src.js.map"
-    ])
-        .pipe(gulp.dest("public/lib"));
+    ];
+
+    return gulp.src(filterNonExistingFiles(files, LIB_DESTINATION_PATH))
+        .pipe(gulp.dest(LIB_DESTINATION_PATH));
 });
 
-// copy ng2 and dependencies
-gulp.task("ng2:maps", function () {
-    return gulp.src([
-        "node_modules/@angular/**/*.map",
-        "node_modules/rxjs/**/*.map"
-    ])
-        .pipe(flatten())
-        .pipe(gulp.dest("public/lib"));
-});
-
-// copy ng2 and dependencies
-gulp.task("ng2:libs", ["ng2:polyfills", "ng2:maps"], function () {
-    return gulp.src([
-        "node_modules/@angular/**/*.js",
-        "node_modules/rxjs/**/*.js"
-    ], { base: "./node_modules/" })
-        .pipe(gulp.dest("public/lib"));
-});
-
-gulp.task("move:src:maps", function () {
-    return gulp.src("public/app/**/*.map")
-        .pipe(flatten())
-        .pipe(gulp.dest("public/lib"));
-});
-
-gulp.task("del:src:maps", ["move:src:maps"], function () {
-    return del("public/app/**/*.map");
-});
+// copy all dependencies
+gulp.task("COPY:DEPENDENCIES", ["COPY:ng2", "COPY:rxjs", "COPY:polyfills"]);
